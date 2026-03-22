@@ -1,5 +1,6 @@
 package com.example.esemkablogger.ui
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
@@ -97,12 +98,10 @@ class RegisterScreen : AppCompatActivity() {
             }
 
             if (result.code in 200..300) {
-                val data = JSONObject(result.body)
-                TokenManager(this@RegisterScreen).save(data.getString("token"))
-                ExpTokenManager(this@RegisterScreen).save(data.getString("expiredAt"))
+                startActivity(Intent(this@RegisterScreen, LoginScreen::class.java))
                 Helper.toast(this@RegisterScreen, "Register success")
             } else {
-                Helper.toast(this@RegisterScreen, JSONObject(result.body).getString("title"))
+                Helper.toast(this@RegisterScreen, JSONObject(result.body).toString())
             }
         }
     }
