@@ -80,6 +80,7 @@ class LoginScreen : AppCompatActivity() {
                 TokenManager(this@LoginScreen).save(data.getString("token"))
                 ExpTokenManager(this@LoginScreen).save(data.getString("expiredAt"))
                 Helper.toast(this@LoginScreen, "Login success")
+                    startActivity(Intent(this@LoginScreen, MainScreen::class.java))
             } else {
                 Helper.toast(this@LoginScreen, "Please correct the error and try again")
             }

@@ -38,6 +38,10 @@ class RegisterScreen : AppCompatActivity() {
             insets
         }
 
+        binding.tvSIgn.setOnClickListener {
+            startActivity(Intent(this, RegisterScreen::class.java))
+        }
+
         binding.layoutPassword.setEndIconOnClickListener {
             if (binding.etPassword.inputType ==  (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)) {
                 binding.etPassword.inputType = (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)

@@ -36,6 +36,7 @@ class HttpHandler() {
 
             Http(code, body)
         } catch (e: Exception) {
+            e.printStackTrace()
             Http(500, e.message ?: "error")
         }
     }

@@ -15,6 +15,9 @@
         android:theme="@style/Theme.EsemkaBlogger"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.MainScreen"
+            android:exported="false" />
+        <activity
             android:name=".ui.RegisterScreen"
             android:exported="false" />
         <activity
@@ -28,7 +31,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>
