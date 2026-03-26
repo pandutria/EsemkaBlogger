@@ -10,8 +10,9 @@ import androidx.appcompat.R
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.esemkablogger.data.HttpHandler
+import com.example.esemkablogger.data.local.TokenManager
+import com.example.esemkablogger.data.local.UserSession
 import com.example.esemkablogger.data.model.Category
-import com.example.esemkablogger.data.model.Http
 import com.example.esemkablogger.data.model.Post
 import com.example.esemkablogger.data.model.User
 import com.example.esemkablogger.databinding.FragmentHomeBinding
@@ -20,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import org.json.JSONObject
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -32,12 +34,29 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
 
+        me()
         showDataCategory()
         showData()
 
         binding.btn.setOnClickListener {
             showData()
         }
+
+//        binding.spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(
+//                parent: AdapterView<*>?,
+//                view: View?,
+//                position: Int,
+//                id: Long
+//            ) {
+//                showData()
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>?) {
+//                showData()
+//            }
+//        }
+
         return binding.root
     }
 
@@ -46,9 +65,41 @@ class HomeFragment : Fragment() {
         val list: MutableList<Post> = mutableListOf()
         lifecycleScope.launch {
             val result = withContext(Dispatchers.IO) {
-                HttpHandler().request(
-                    "posts"
-                )
+                if (binding.spinnerCategory.selectedItem != null) {
+                    if (binding.etSearch.text.toString()
+                            .isNotEmpty() && binding.spinnerCategory.selectedItem.toString() != "Select Category"
+                    ) {
+                        HttpHandler().request(
+                            "posts?title=${binding.etSearch.text.toString()}&category=${binding.spinnerCategory.selectedItem}"
+                        )
+                    } else if (binding.etSearch.text.toString()
+                            .isNotEmpty() && binding.spinnerCategory.selectedItem.toString() == "Select Category"
+                    ) {
+                        HttpHandler().request(
+                            "posts?title=${binding.etSearch.text.toString()}"
+                        )
+                    } else if (binding.etSearch.text.toString()
+                            .isEmpty() && binding.spinnerCategory.selectedItem.toString() != "Select Category"
+                    ) {
+                        HttpHandler().request(
+                            "posts?category=${binding.spinnerCategory.selectedItem}"
+                        )
+                    } else if (binding.etSearch.text.toString()
+                            .isEmpty() && binding.spinnerCategory.selectedItem.toString() == "Select Category"
+                    ) {
+                        HttpHandler().request(
+                            "posts"
+                        )
+                    } else {
+                        HttpHandler().request(
+                            "posts"
+                        )
+                    }
+                } else {
+                    HttpHandler().request(
+                        "posts"
+                    )
+                }
             }
 
             if (result.code in 200..300) {
@@ -125,7 +176,38 @@ class HomeFragment : Fragment() {
 
                 adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
                 binding.spinnerCategory.adapter = adapter
+                Log.d("category", binding.spinnerCategory.selectedItem.toString())
             }
         }
+    }
+
+    fun me() {
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                HttpHandler().request(
+                    "me",
+                    token = TokenManager(requireContext()).get()
+                )
+            }
+
+            if (result.code in 200..300) {
+                val user = JSONObject(result.body)
+
+                UserSession.user =  User(
+                    id = user.getString("id"),
+                    firstName = user.getString("firstName"),
+                    lastName = user.getString("lastName"),
+                    username = user.getString("username"),
+                    dateOfBirth = user.getString("dateOfBirth"),
+                    joinDate = user.getString("joinDate"),
+                    photo = user.getString("photo"),
+                )
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        me()
     }
 }

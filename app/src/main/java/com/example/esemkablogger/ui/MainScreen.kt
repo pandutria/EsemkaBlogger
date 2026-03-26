@@ -5,10 +5,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.esemkablogger.R
+import com.example.esemkablogger.data.HttpHandler
 import com.example.esemkablogger.databinding.ActivityMainScreenBinding
 import com.example.esemkablogger.ui.adapter.ViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainScreen : AppCompatActivity() {
     private var _binding: ActivityMainScreenBinding? = null
@@ -40,4 +45,6 @@ class MainScreen : AppCompatActivity() {
             }
         }.attach()
     }
+
+
 }

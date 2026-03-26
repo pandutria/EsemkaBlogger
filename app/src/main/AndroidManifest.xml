@@ -15,6 +15,9 @@
         android:theme="@style/Theme.EsemkaBlogger"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.PostDetailScreen"
+            android:exported="false" />
+        <activity
             android:name=".ui.MainScreen"
             android:exported="false" />
         <activity

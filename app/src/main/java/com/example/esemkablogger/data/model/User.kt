@@ -6,6 +6,6 @@ data class User(
     val id: String,
     val joinDate: String,
     val lastName: String,
-    val photo: String,
+    val photo: String? = null,
     val username: String
 )
