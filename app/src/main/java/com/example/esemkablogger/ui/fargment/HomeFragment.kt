@@ -1,22 +1,22 @@
 package com.example.esemkablogger.ui.fargment
 
+import android.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.appcompat.R
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.esemkablogger.data.HttpHandler
 import com.example.esemkablogger.data.local.TokenManager
-import com.example.esemkablogger.data.local.UserSession
 import com.example.esemkablogger.data.model.Category
 import com.example.esemkablogger.data.model.Post
 import com.example.esemkablogger.data.model.User
 import com.example.esemkablogger.databinding.FragmentHomeBinding
 import com.example.esemkablogger.ui.adapter.PostAdapter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,7 +34,6 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
 
-        me()
         showDataCategory()
         showData()
 
@@ -170,44 +169,20 @@ class HomeFragment : Fragment() {
                 }
                 val adapter = ArrayAdapter(
                     requireContext(),
-                    R.layout.support_simple_spinner_dropdown_item,
+                    R.layout.simple_spinner_dropdown_item,
                     list
                 )
 
-                adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
                 binding.spinnerCategory.adapter = adapter
                 Log.d("category", binding.spinnerCategory.selectedItem.toString())
             }
         }
     }
 
-    fun me() {
-        lifecycleScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                HttpHandler().request(
-                    "me",
-                    token = TokenManager(requireContext()).get()
-                )
-            }
 
-            if (result.code in 200..300) {
-                val user = JSONObject(result.body)
-
-                UserSession.user =  User(
-                    id = user.getString("id"),
-                    firstName = user.getString("firstName"),
-                    lastName = user.getString("lastName"),
-                    username = user.getString("username"),
-                    dateOfBirth = user.getString("dateOfBirth"),
-                    joinDate = user.getString("joinDate"),
-                    photo = user.getString("photo"),
-                )
-            }
-        }
-    }
 
     override fun onResume() {
         super.onResume()
-        me()
     }
 }

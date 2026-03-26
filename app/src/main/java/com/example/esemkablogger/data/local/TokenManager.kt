@@ -9,7 +9,7 @@ class TokenManager(context: Context) {
     val shared = context.getSharedPreferences(pref, Context.MODE_PRIVATE)
 
     fun save(token: String) {
-        shared.edit().putString(key, token)
+        shared.edit().putString(key, token).apply()
     }
 
     fun get(): String? {
@@ -17,6 +17,6 @@ class TokenManager(context: Context) {
     }
 
     fun remove() {
-        shared.edit().remove(key)
+        shared.edit().remove(key).apply()
     }
 }

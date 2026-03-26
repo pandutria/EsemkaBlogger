@@ -12,11 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import com.example.esemkablogger.R
 import com.example.esemkablogger.data.HttpHandler
 import com.example.esemkablogger.data.local.TokenManager
-import com.example.esemkablogger.data.local.UserSession
 import com.example.esemkablogger.data.model.Category
 import com.example.esemkablogger.data.model.Post
 import com.example.esemkablogger.data.model.User
 import com.example.esemkablogger.databinding.ActivityPostDetailScreenBinding
+import com.example.esemkablogger.ui.fargment.HomeFragment
 import com.example.esemkablogger.utils.Helper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +30,7 @@ class PostDetailScreen : AppCompatActivity() {
     private var _binding: ActivityPostDetailScreenBinding? = null
     private val binding get() = _binding!!
     var post: Post? = null
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,13 +99,12 @@ class PostDetailScreen : AppCompatActivity() {
                 val date = LocalDateTime.parse(post?.date)
                 binding.tvDate.text = date.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy"))
 
-
                 CoroutineScope(Dispatchers.Main).launch {
                     val bitmap = Helper.loadImage(post?.imageContent!!)
                     binding.imgImage.setImageBitmap(bitmap)
                 }
 
-                if (UserSession.user?.id == post?.user?.id) {
+                if (Helper.me(this@PostDetailScreen)?.id == post?.user?.id) {
                     binding.btn.text = "Delete Post"
                 } else {
                     isLike()
@@ -165,7 +165,7 @@ class PostDetailScreen : AppCompatActivity() {
                 likeCount()
                 Helper.toast(this@PostDetailScreen, "berhasil")
             } else {
-                Helper.toast(this@PostDetailScreen, result.body.toString())
+                Helper.toast(this@PostDetailScreen, result.body)
             }
         }
     }

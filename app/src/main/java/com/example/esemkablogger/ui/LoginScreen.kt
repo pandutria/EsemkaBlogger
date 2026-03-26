@@ -2,6 +2,7 @@ package com.example.esemkablogger.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,6 @@ import com.example.esemkablogger.utils.Helper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
 import org.json.JSONObject
 
 class LoginScreen : AppCompatActivity() {
@@ -42,15 +42,19 @@ class LoginScreen : AppCompatActivity() {
         }
 
         binding.layoutPassword.setEndIconOnClickListener {
-            if (binding.etPassword.inputType ==  (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)) {
-                binding.etPassword.inputType = (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+            if (binding.etPassword.inputType == (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)) {
+                binding.etPassword.inputType =
+                    (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
             } else {
-                binding.etPassword.inputType = (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)
+                binding.etPassword.inputType =
+                    (EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)
             }
         }
 
         binding.btn.setOnClickListener {
-            if (binding.etUsername.text.toString().isEmpty() || binding.etPassword.text.toString().isEmpty()) {
+            if (binding.etUsername.text.toString().isEmpty() || binding.etPassword.text.toString()
+                    .isEmpty()
+            ) {
                 Helper.toast(this, "All fields must be filled")
                 return@setOnClickListener
             }
@@ -78,9 +82,10 @@ class LoginScreen : AppCompatActivity() {
                 val data = JSONObject(result.body)
 
                 TokenManager(this@LoginScreen).save(data.getString("token"))
+                Log.d("token", TokenManager(this@LoginScreen).get().toString())
                 ExpTokenManager(this@LoginScreen).save(data.getString("expiredAt"))
                 Helper.toast(this@LoginScreen, "Login success")
-                    startActivity(Intent(this@LoginScreen, MainScreen::class.java))
+                startActivity(Intent(this@LoginScreen, MainScreen::class.java))
             } else {
                 Helper.toast(this@LoginScreen, "Please correct the error and try again")
             }

@@ -9,7 +9,7 @@ class ExpTokenManager(context: Context) {
     val shared = context.getSharedPreferences(pref, Context.MODE_PRIVATE)
 
     fun save(exp: String) {
-        shared.edit().putString(key, exp)
+        shared.edit().putString(key, exp).apply()
     }
 
     fun get(): String? {
@@ -17,6 +17,6 @@ class ExpTokenManager(context: Context) {
     }
 
     fun remove() {
-        shared.edit().remove(key)
+        shared.edit().remove(key).apply()
     }
 }
