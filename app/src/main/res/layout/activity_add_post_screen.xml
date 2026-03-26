@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:elevation="3dp"
+        android:orientation="vertical"
+        android:paddingVertical="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Esemka Blogger"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:fontFamily="sans-serif-black"
+            android:text="Create a Post"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="Keep your blogging profile up-to-date for a better experience"
+            android:textColor="#898989"
+            android:textSize="14sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="25dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTitle"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:fontFamily="sans-serif-medium"
+                android:hint="Title"
+                android:maxLines="1"
+                android:paddingHorizontal="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="#898989"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp">
+
+            <Spinner
+                android:id="@+id/spinnerCategory"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:fontFamily="sans-serif-medium"
+                android:hint="Search"
+                android:paddingHorizontal="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="#898989"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="15dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:fontFamily="sans-serif-medium"
+                android:hint="Text..."
+                android:maxLines="1"
+                android:paddingHorizontal="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="#898989"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFileThumbnail"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:hint="File Name"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:paddingHorizontal="15dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#898989"
+                    android:inputType="text"
+                    android:textSize="14sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnThumbnail"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/blue"
+                android:text="Select Thumbnail"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14sp"
+                app:cornerRadius="15dp"
+                app:elevation="3dp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:hint="File Name"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    android:paddingHorizontal="15dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#898989"
+                    android:textSize="14sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnImage"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/blue"
+                android:text="Select Image"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14sp"
+                app:cornerRadius="15dp"
+                app:elevation="3dp"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/blue"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="30dp"
+            android:text="Save"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="14sp"
+            app:cornerRadius="15dp"
+            app:elevation="3dp"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

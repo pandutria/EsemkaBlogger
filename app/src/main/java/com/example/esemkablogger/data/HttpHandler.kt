@@ -40,4 +40,31 @@ class HttpHandler() {
             Http(500, e.message ?: "error")
         }
     }
+
+    fun requestImage(endpoint: String,  binaryData: ByteArray): Http {
+        return try {
+            val conn = URL(Helper.url + endpoint).openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.doOutput = true
+            conn.setRequestProperty("Content-Type", "application/octet-stream")
+            conn.setRequestProperty("Content-Length", binaryData.size.toString())
+
+            conn.outputStream.use {
+                it.write(binaryData)
+            }
+
+            val code = conn.responseCode
+            val body = try {
+                conn.inputStream.bufferedReader().use { it.readText() }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                conn.errorStream.bufferedReader().use { it.readText() }
+            }
+
+            Http(code, body)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Http(500, e.message ?: "error")
+        }
+    }
 }

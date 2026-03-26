@@ -1,5 +1,6 @@
 package com.example.esemkablogger.ui.fargment
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,10 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.example.esemkablogger.R
 import com.example.esemkablogger.databinding.FragmentProfileBinding
+import com.example.esemkablogger.ui.AddPostScreen
+import com.example.esemkablogger.ui.adapter.ViewPagerProfileAdapter
 import com.example.esemkablogger.utils.Helper
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,6 +34,24 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentProfileBinding.inflate(layoutInflater, container, false)
         showData()
+
+        binding.btnAddPost.setOnClickListener {
+            startActivity(Intent(requireActivity(), AddPostScreen::class.java))
+        }
+
+        binding.viewPager.adapter = ViewPagerProfileAdapter(childFragmentManager, lifecycle)
+
+        TabLayoutMediator(binding.tab, binding.viewPager) {tab, position ->
+            when(position) {
+                0 -> {
+                    tab.text = "MY POST"
+                }
+                1 -> {
+                    tab.text = "LIKED POSTS"
+                }
+            }
+        }.attach()
+
         return binding.root
     }
 

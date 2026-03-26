@@ -16,7 +16,6 @@ import com.example.esemkablogger.data.model.Category
 import com.example.esemkablogger.data.model.Post
 import com.example.esemkablogger.data.model.User
 import com.example.esemkablogger.databinding.ActivityPostDetailScreenBinding
-import com.example.esemkablogger.ui.fargment.HomeFragment
 import com.example.esemkablogger.utils.Helper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +49,8 @@ class PostDetailScreen : AppCompatActivity() {
         binding.btn.setOnClickListener {
             if (binding.btn.text != "Delete Post") {
                 likePost()
+            } else {
+                deletePost()
             }
         }
     }
@@ -109,6 +110,22 @@ class PostDetailScreen : AppCompatActivity() {
                 } else {
                     isLike()
                 }
+            }
+        }
+    }
+
+    fun deletePost() {
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                HttpHandler().request(
+                    "posts/${intent.getStringExtra("id")}",
+                    "DELETE",
+                    token = TokenManager(this@PostDetailScreen).get()
+                )
+            }
+
+            if (result.code in 200..300) {
+                finish()
             }
         }
     }
