@@ -2,12 +2,14 @@ package com.example.esemkablogger.ui
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -30,31 +32,33 @@ class AddPostScreen : AppCompatActivity() {
     private val binding get() = _binding!!
     var thumbnailByte: ByteArray? = null
     var imageByte: ByteArray? = null
-    var type = "thumbnail"
 
+    @RequiresApi(Build.VERSION_CODES.O)
     val pickMediaThummbnail =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                val binaryData = getByteArrayFromUri(uri)
+                val binaryData = Helper.getByteArrayFromUri(this, uri)
                 thumbnailByte = binaryData
-                binding.etFileThumbnail.setText(getFileNameFromUri(this, uri))
+                binding.etFileThumbnail.setText(Helper.getFileNameFromUri(this, uri))
             } else {
 
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     val pickMediaImage =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                val binaryData = getByteArrayFromUri(uri)
+                val binaryData = Helper.getByteArrayFromUri(this, uri)
                 imageByte = binaryData
-                binding.etFileImage.setText(getFileNameFromUri(this, uri))
+                binding.etFileImage.setText(Helper.getFileNameFromUri(this, uri))
 
             } else {
 
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -67,12 +71,10 @@ class AddPostScreen : AppCompatActivity() {
         }
 
         binding.btnThumbnail.setOnClickListener {
-            type = "thumbnail"
             pickMediaThummbnail.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.btnImage.setOnClickListener {
-            type = "image"
             pickMediaImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
@@ -162,27 +164,6 @@ class AddPostScreen : AppCompatActivity() {
                 Helper.toast(this@AddPostScreen, result.body)
             }
         }
-    }
-
-    fun getByteArrayFromUri(uri: Uri): ByteArray {
-        return contentResolver.openInputStream(uri).use {
-            it!!.readBytes()
-        }
-    }
-
-    fun getFileNameFromUri(context: Context, uri: Uri): String? {
-        var fileName: String? = null
-        if (uri.scheme == "content") {
-            context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                    if (nameIndex != -1) {
-                        fileName = cursor.getString(nameIndex)
-                    }
-                }
-            }
-        }
-        return fileName
     }
 
     fun showDataCategory() {

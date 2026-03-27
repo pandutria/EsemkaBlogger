@@ -3,8 +3,12 @@ package com.example.esemkablogger.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
+import android.provider.OpenableColumns
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.example.esemkablogger.data.HttpHandler
 import com.example.esemkablogger.data.local.TokenManager
 import com.example.esemkablogger.data.model.User
@@ -60,5 +64,23 @@ object Helper {
                 null
             }
         }
+    }
+
+    fun getByteArrayFromUri(context: Context, uri: Uri): ByteArray {
+        return context.contentResolver.openInputStream(uri).use {
+            it!!.readBytes()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getFileNameFromUri(context: Context, uri: Uri): String? {
+        var fileName: String? = null
+        context.contentResolver.query(uri, null, null, null).use { cursor ->
+            if (cursor!!.moveToFirst()) {
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                fileName = cursor.getString(nameIndex)
+            }
+        }
+        return fileName
     }
 }

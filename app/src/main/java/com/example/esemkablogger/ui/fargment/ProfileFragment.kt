@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.esemkablogger.R
 import com.example.esemkablogger.databinding.FragmentProfileBinding
 import com.example.esemkablogger.ui.AddPostScreen
+import com.example.esemkablogger.ui.UpdateProfileScreen
 import com.example.esemkablogger.ui.adapter.ViewPagerProfileAdapter
 import com.example.esemkablogger.utils.Helper
 import com.google.android.material.tabs.TabLayoutMediator
@@ -37,6 +38,10 @@ class ProfileFragment : Fragment() {
 
         binding.btnAddPost.setOnClickListener {
             startActivity(Intent(requireActivity(), AddPostScreen::class.java))
+        }
+
+        binding.btnProfile.setOnClickListener {
+            startActivity(Intent(requireActivity(), UpdateProfileScreen::class.java))
         }
 
         binding.viewPager.adapter = ViewPagerProfileAdapter(childFragmentManager, lifecycle)
@@ -77,5 +82,10 @@ class ProfileFragment : Fragment() {
             }
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showData()
     }
 }
