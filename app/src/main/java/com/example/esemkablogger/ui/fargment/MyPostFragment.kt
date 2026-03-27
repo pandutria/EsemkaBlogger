@@ -84,4 +84,9 @@ class MyPostFragment : Fragment() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        showData()
+    }
 }

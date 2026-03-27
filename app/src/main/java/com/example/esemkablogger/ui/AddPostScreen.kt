@@ -1,23 +1,19 @@
 package com.example.esemkablogger.ui
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
-import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.esemkablogger.R
 import com.example.esemkablogger.data.HttpHandler
-import com.example.esemkablogger.data.local.ExpTokenManager
 import com.example.esemkablogger.data.local.TokenManager
 import com.example.esemkablogger.data.model.Category
 import com.example.esemkablogger.databinding.ActivityAddPostScreenBinding
@@ -28,8 +24,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 class AddPostScreen : AppCompatActivity() {
     private var _binding: ActivityAddPostScreenBinding? = null
@@ -38,20 +32,29 @@ class AddPostScreen : AppCompatActivity() {
     var imageByte: ByteArray? = null
     var type = "thumbnail"
 
-    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
-        if (uri != null) {
-            val binaryData = getByteArrayFromUri(uri)
-            if (type == "thumbnail") {
+    val pickMediaThummbnail =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val binaryData = getByteArrayFromUri(uri)
                 thumbnailByte = binaryData
                 binding.etFileThumbnail.setText(getFileNameFromUri(this, uri))
             } else {
+
+            }
+        }
+
+    val pickMediaImage =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val binaryData = getByteArrayFromUri(uri)
                 imageByte = binaryData
                 binding.etFileImage.setText(getFileNameFromUri(this, uri))
-            }
-        } else {
 
+            } else {
+
+            }
         }
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -65,17 +68,19 @@ class AddPostScreen : AppCompatActivity() {
 
         binding.btnThumbnail.setOnClickListener {
             type = "thumbnail"
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickMediaThummbnail.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.btnImage.setOnClickListener {
             type = "image"
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickMediaImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.btn.setOnClickListener {
-            if (binding.etTitle.text.toString().isEmpty() || binding.etText.text.toString().isEmpty() ||
-                (binding.spinnerCategory.selectedItem as Category).name == "Select Category") {
+            if (binding.etTitle.text.toString().isEmpty() || binding.etText.text.toString()
+                    .isEmpty() ||
+                (binding.spinnerCategory.selectedItem as Category).name == "Select Category"
+            ) {
                 Helper.toast(this, "All field must be filled")
                 return@setOnClickListener
             }
@@ -105,7 +110,15 @@ class AddPostScreen : AppCompatActivity() {
 
             if (result.code in 200..300) {
                 val data = JSONObject(result.body)
-                createPostThumbnail(data.getString("id"))
+
+                if (binding.etFileThumbnail.text.toString().isNotEmpty()) {
+                    createPostThumbnail(data.getString("id"))
+                }
+
+                if (binding.etFileImage.text.toString().isNotEmpty()) {
+                    createPostImage(data.getString("id"))
+                }
+
                 Helper.toast(this@AddPostScreen, "Create post success")
             } else {
                 Helper.toast(this@AddPostScreen, result.body)
@@ -118,13 +131,32 @@ class AddPostScreen : AppCompatActivity() {
             val result = withContext(Dispatchers.IO) {
                 HttpHandler().requestImage(
                     "posts/$id/thumbnail",
-                    thumbnailByte!!
+                    thumbnailByte!!,
+                    TokenManager(this@AddPostScreen).get().toString()
                 )
             }
 
             if (result.code in 200..300) {
-                val data = JSONObject(result.body)
                 Helper.toast(this@AddPostScreen, "Create thumbnail success")
+                finish()
+            } else {
+                Helper.toast(this@AddPostScreen, result.body)
+            }
+        }
+    }
+
+    fun createPostImage(id: String) {
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                HttpHandler().requestImage(
+                    "posts/$id/image",
+                    imageByte!!,
+                    TokenManager(this@AddPostScreen).get().toString()
+                )
+            }
+
+            if (result.code in 200..300) {
+                Helper.toast(this@AddPostScreen, "Create image success")
                 finish()
             } else {
                 Helper.toast(this@AddPostScreen, result.body)
@@ -147,7 +179,7 @@ class AddPostScreen : AppCompatActivity() {
                     if (nameIndex != -1) {
                         fileName = cursor.getString(nameIndex)
                     }
-                 }
+                }
             }
         }
         return fileName

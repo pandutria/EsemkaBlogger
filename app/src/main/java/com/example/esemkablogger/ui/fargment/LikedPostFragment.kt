@@ -85,4 +85,9 @@ class LikedPostFragment : Fragment() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        showData()
+    }
 }
